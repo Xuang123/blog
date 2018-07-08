@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+<script>
+    var password = document.getElementById("password");
+    if(password == {% blog.password %}){
+
+    }
+
+</script>
+
+{% block title %}加密博客，请输入密码{% endblock %}
+<div style="overflow:hidden; margin: 0 auto; width:512px;">
+    <input type="password" id = "password" style="border:1px solid #00a0e9; width:400px; line-height:20px; padding:9px 5px; display:block; float:left;" />
+    <input type="button" onclick="test()" style="width:100px; line-height:40px; background-color:#00a0e9; border:none; display:block; float:left; color:#fff;" value="确定" />
+</div>
+
