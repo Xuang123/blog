@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myblog.views import IndexView, ArichiveView, TagDetailView, BlogDetailView,TagView,login
+from myblog.views import IndexView, ArichiveView, TagDetailView, BlogDetailView,TagView,login,BlogDetailView_private
 from django.conf.urls import url
 from myblog.views import AddCommentView
 from myblog.feeds import BlogRssFeed
@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^tags/(?P<tag_name>\w+)$', TagDetailView.as_view(), name='tag_name'),
     url(r'^tags/$', TagView.as_view(), name='tags'),
     url(r'^blog/(?P<blog_id>\d+)$', BlogDetailView.as_view(), name='blog_id'),
+    url(r'^blog/(?P<private_test>\d+)$', BlogDetailView_private.as_view(), name='private_test'),
     url(r'^add_comment/$', AddCommentView.as_view(), name='add_comment'),
     url(r'^rss/$', BlogRssFeed(), name='rss'),
     url(r'^category/(?P<category_name>\w+)/$', CategoryDetaiView.as_view(), name='category_name'),

@@ -131,6 +131,7 @@ class BlogDetailView(View):
 
     def get(self, request, blog_id):
         blog = get_object_or_404(Blog, pk=blog_id)
+
         # 博客、标签、分类数目统计
         count_nums = Counts.objects.get(id=1)
         blog_nums = count_nums.blog_nums
@@ -161,7 +162,12 @@ class BlogDetailView(View):
             if not blog_next:
                 id_next += 1
             else:
-                has_next = True;
+                has_next = True
+        if blog.isprivate:
+            return render(request,'private_test.html',{
+                'blog': blog,
+            })
+        else:
             return render(request, 'blog-detail.html', {
                 'blog': blog,
                 'blog_prev': blog_prev,
@@ -173,8 +179,57 @@ class BlogDetailView(View):
                 'blog_nums': blog_nums,
                 'cate_nums': cate_nums,
                 'tag_nums': tag_nums,
-        })
+            })
 
+
+class BlogDetailView_private(View):
+
+    def get(self, request, blog_id):
+        blog = get_object_or_404(Blog, pk=blog_id)
+
+        # 博客、标签、分类数目统计
+        count_nums = Counts.objects.get(id=1)
+        blog_nums = count_nums.blog_nums
+        cate_nums = count_nums.category_nums
+        tag_nums = count_nums.tag_nums
+        # 博客点击数+1, 评论数统计
+        blog.click_nums += 1
+        blog.save()
+        #获取评论内容
+        all_comment = Comment.objects.filter(blog_id=blog_id)
+        comment_nums = all_comment.count()
+        # 将博客内容用markdown显示出来
+        blog.content = markdown.markdown(blog.content)
+        # 实现博客上一篇与下一篇功能
+        has_prev = False
+        has_next = False
+        id_prev = id_next = int(blog_id)
+        blog_id_max = Blog.objects.all().order_by('-id').first()
+        id_max = blog_id_max.id
+        while not has_prev and id_prev >= 1:
+            blog_prev = Blog.objects.filter(id=id_prev - 1).first()
+            if not blog_prev:
+                id_prev -= 1
+            else:
+                has_prev = True
+        while not has_next and id_next <= id_max:
+            blog_next = Blog.objects.filter(id=id_next + 1).first()
+            if not blog_next:
+                id_next += 1
+            else:
+                has_next = True
+        return render(request, 'blog-detail.html', {
+            'blog': blog,
+            'blog_prev': blog_prev,
+            'blog_next': blog_next,
+            'has_prev': has_prev,
+            'has_next': has_next,
+            'all_comment': all_comment,
+            'comment_nums': comment_nums,
+            'blog_nums': blog_nums,
+            'cate_nums': cate_nums,
+            'tag_nums': tag_nums,
+        })
 
 class AddCommentView(View):
     """

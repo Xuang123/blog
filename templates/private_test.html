@@ -3,7 +3,10 @@
 <script>
     var password = document.getElementById("password");
     if(password == {% blog.password %}){
-
+        location.href = {% url 'blog' blog.id 'private_test=True' %}
+    }
+    else{
+        location.href = {% url 'blog' blog.id %}
     }
 
 </script>
